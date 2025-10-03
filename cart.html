@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart - E-commerce Product Showcase</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">E-commerce Showcase</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#products-section">Products</a></li>
+      <li><a href="index.html#reviews-section">Reviews</a></li>
+      <li><a href="cart.html" class="active">Cart</a></li>
+      <li><a href="index.html#contact-section">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="cart-section">
+    <h2>Your Cart</h2>
+    <div id="cart-container">
+      <!-- Cart items will be rendered here -->
+    </div>
+    <div id="cart-summary" class="cart-summary hidden">
+      <p>Total Items: <span id="total-items">0</span></p>
+      <p>Total Price: $<span id="total-price">0.00</span></p>
+      <button id="checkout-btn" class="btn primary-btn">Checkout</button>
+    </div>
+    <p id="empty-cart-msg" style="text-align:center; font-size:1.2rem; margin-top:2rem;">Your cart is empty.</p>
+  </section>
+
+  <script>
+    // ======= Cart Page Script =======
+
+    // Product data (same as in script.js)
+    const products = [
+      { id: 'p1', name: 'Wireless Headphones', price: 59.99, images: ['https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p2', name: 'Smart Watch', price: 129.99, images: ['https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p3', name: 'Leather Jacket', price: 89.99, images: ['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p4', name: 'Sneakers', price: 49.99, images: ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p5', name: 'Coffee Maker', price: 39.99, images: ['https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p6', name: 'Blender', price: 29.99, images: ['https://images.unsplash.com/photo-1586201375761-83865001e1a5?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p7', name: 'Bluetooth Speaker', price: 25.99, images: ['https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p8', name: 'Denim Jeans', price: 39.99, images: ['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p9', name: 'Table Lamp', price: 19.99, images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p10', name: 'Sunglasses', price: 15.99, images: ['https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p11', name: 'Microwave Oven', price: 89.99, images: ['https://images.unsplash.com/photo-1586201375761-83865001e1a5?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p12', name: 'Fitness Tracker', price: 49.99, images: ['https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p13', name: 'Backpack', price: 29.99, images: ['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p14', name: 'Electric Kettle', price: 24.99, images: ['https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p15', name: 'Gaming Mouse', price: 39.99, images: ['https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p16', name: 'Cotton T-Shirt', price: 12.99, images: ['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p17', name: 'Floor Rug', price: 59.99, images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p18', name: 'Wireless Charger', price: 19.99, images: ['https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p19', name: 'Winter Scarf', price: 14.99, images: ['https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80'] },
+      { id: 'p20', name: 'Ceramic Vase', price: 22.99, images: ['https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=600&q=80'] },
+    ];
+
+    const cartContainer = document.getElementById('cart-container');
+    const totalItemsEl = document.getElementById('total-items');
+    const totalPriceEl = document.getElementById('total-price');
+    const cartSummary = document.getElementById('cart-summary');
+    const emptyCartMsg = document.getElementById('empty-cart-msg');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Get cart from localStorage
+    function getCart() {
+      const cart = localStorage.getItem('cartItems');
+      return cart ? JSON.parse(cart) : [];
+    }
+
+    // Save cart to localStorage
+    function saveCart(cart) {
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+    }
+
+    // Render cart items
+    function renderCart() {
+      const cart = getCart();
+      cartContainer.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartSummary.classList.add('hidden');
+        emptyCartMsg.style.display = 'block';
+        return;
+      }
+
+      emptyCartMsg.style.display = 'none';
+      cartSummary.classList.remove('hidden');
+
+      let totalItems = 0;
+      let totalPrice = 0;
+
+      cart.forEach((item) => {
+        const product = products.find((p) => p.id === item.id);
+        if (!product) return;
+
+        totalItems += item.quantity;
+        totalPrice += product.price * item.quantity;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        itemEl.style.display = 'flex';
+        itemEl.style.alignItems = 'center';
+        itemEl.style.marginBottom = '1rem';
+        itemEl.style.borderBottom = '1px solid #ddd';
+        itemEl.style.paddingBottom = '1rem';
+
+        itemEl.innerHTML = `
+          <img src="${product.images[0]}" alt="${product.name}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; margin-right:1rem;" />
+          <div style="flex-grow:1;">
+            <h4 style="margin-bottom:0.3rem;">${product.name}</h4>
+            <p style="margin-bottom:0.3rem;">Price: $${product.price.toFixed(2)}</p>
+            <label>
+              Quantity:
+              <input type="number" min="1" value="${item.quantity}" data-id="${item.id}" class="qty-input" style="width:60px; margin-left:0.5rem;" />
+            </label>
+          </div>
+          <button data-id="${item.id}" class="remove-btn btn secondary-btn" style="height:36px; align-self:flex-start;">Remove</button>
+        `;
+
+        cartContainer.appendChild(itemEl);
+      });
+
+      totalItemsEl.textContent = totalItems;
+      totalPriceEl.textContent = totalPrice.toFixed(2);
+    }
+
+    // Update quantity handler
+    cartContainer.addEventListener('change', (e) => {
+      if (e.target.classList.contains('qty-input')) {
+        const newQty = parseInt(e.target.value);
+        const id = e.target.dataset.id;
+        if (newQty < 1 || isNaN(newQty)) {
+          e.target.value = 1;
+          return;
+        }
+        const cart = getCart();
+        const item = cart.find((i) => i.id === id);
+        if (item) {
+          item.quantity = newQty;
+          saveCart(cart);
+          renderCart();
+        }
+      }
+    });
+
+    // Remove item handler
+    cartContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-btn')) {
+        const id = e.target.dataset.id;
+        let cart = getCart();
+        cart = cart.filter((item) => item.id !== id);
+        saveCart(cart);
+        renderCart();
+      }
+    });
+
+    // Checkout button click
+    checkoutBtn.addEventListener('click', () => {
+      window.location.href = 'checkout.html';
+    });
+
+    // Initial render
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout - E-commerce Product Showcase</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">E-commerce Showcase</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#products-section">Products</a></li>
+      <li><a href="index.html#reviews-section">Reviews</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="index.html#contact-section">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="checkout-section">
+    <h2>Order Confirmation</h2>
+    <div id="order-summary">
+      <!-- Order summary will be rendered here -->
+    </div>
+    <button id="back-to-home" class="btn primary-btn">Back to Home</button>
+  </section>
+
+  <script>
+    // ======= Checkout Page Script =======
+
+    // Product data (same as before)
+    const products = [
+      { id: 'p1', name: 'Wireless Headphones', price: 59.99 },
+      { id: 'p2', name: 'Smart Watch', price: 129.99 },
+      { id: 'p3', name: 'Leather Jacket', price: 89.99 },
+      { id: 'p4', name: 'Sneakers', price: 49.99 },
+      { id: 'p5', name: 'Coffee Maker', price: 39.99 },
+      { id: 'p6', name: 'Blender', price: 29.99 },
+      { id: 'p7', name: 'Bluetooth Speaker', price: 25.99 },
+      { id: 'p8', name: 'Denim Jeans', price: 39.99 },
+      { id: 'p9', name: 'Table Lamp', price: 19.99 },
+      { id: 'p10', name: 'Sunglasses', price: 15.99 },
+      { id: 'p11', name: 'Microwave Oven', price: 89.99 },
+      { id: 'p12', name: 'Fitness Tracker', price: 49.99 },
+      { id: 'p13', name: 'Backpack', price: 29.99 },
+      { id: 'p14', name: 'Electric Kettle', price: 24.99 },
+      { id: 'p15', name: 'Gaming Mouse', price: 39.99 },
+      { id: 'p16', name: 'Cotton T-Shirt', price: 12.99 },
+      { id: 'p17', name: 'Floor Rug', price: 59.99 },
+      { id: 'p18', name: 'Wireless Charger', price: 19.99 },
+      { id: 'p19', name: 'Winter Scarf', price: 14.99 },
+      { id: 'p20', name: 'Ceramic Vase', price: 22.99 },
+    ];
+
+    const orderSummary = document.getElementById('order-summary');
+    const backToHomeBtn = document.getElementById('back-to-home');
+
+    // Get cart from localStorage
+    function getCart() {
+      const cart = localStorage.getItem('cartItems');
+      return cart ? JSON.parse(cart) : [];
+    }
+
+    // Clear cart
+    function clearCart() {
+      localStorage.removeItem('cartItems');
+    }
+
+    // Render order summary
+    function renderOrderSummary() {
+      const cart = getCart();
+      if (cart.length === 0) {
+        orderSummary.innerHTML = '<p>Your cart is empty. Please add products before checkout.</p>';
+        backToHomeBtn.textContent = 'Back to Products';
+        return;
+      }
+
+      let totalPrice = 0;
+      let html = '<ul style="list-style:none; padding-left:0;">';
+
+      cart.forEach((item) => {
+        const product = products.find((p) => p.id === item.id);
+        if (!product) return;
+        const itemTotal = product.price * item.quantity;
+        totalPrice += itemTotal;
+        html += `
+          <li style="margin-bottom:1rem;">
+            <strong>${product.name}</strong> - Quantity: ${item.quantity} - Price: $${itemTotal.toFixed(2)}
+          </li>
+        `;
+      });
+
+      html += `</ul><p style="font-weight:700; font-size:1.2rem;">Total Price: $${totalPrice.toFixed(2)}</p>`;
+      html += '<p>Thank you for your purchase! Your order has been confirmed.</p>';
+
+      orderSummary.innerHTML = html;
+
+      // Clear cart after showing confirmation
+      clearCart();
+    }
+
+    backToHomeBtn.addEventListener('click', () => {
+      window.location.href = 'index.html#products-section';
+    });
+
+    // Initialize
+    renderOrderSummary();
+  </script>
+</body>
+</html>
